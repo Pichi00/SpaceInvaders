@@ -13,7 +13,8 @@ public:
 	~Player() = default;
 private:
 	/*Prywatne zmienne*/
-
+	sf::Sprite playerSprite;
+	sf::Texture playerTexture;
 	/*Prywatne metody*/
 	void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
 };
