@@ -1,18 +1,22 @@
 #include "Player.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "PlayerBullet.h"
 
 const std::string playerTexturePath = "Textures/player.png";
 
 /*Konstruktor*/
 Player::Player(float t_X, float t_Y) {
-	playerSprite.setOrigin(playerWidth / 2, playerHeight / 2);
+	playerSprite.setPosition(0,0);
+	playerSprite.setOrigin(playerWidth/2, playerHeight/2);
 	playerSprite.setPosition(t_X, t_Y);
+	
 	if (!playerTexture.loadFromFile(playerTexturePath)) {
 		std::cout << "Blad ladowania tekstury gracza. Upewnij sie, ze posiadasz plik \"" << playerTexturePath<<"\"" <<std::endl;
 	}
 	playerSprite.setTexture(playerTexture);
-	playerSprite.setScale(3.f, 3.f);
+	playerSprite.setScale(playerScale, playerScale);
+	
 }
 
 /*Nadpisana funkcja draw()*/
@@ -30,25 +34,29 @@ void Player::update() {
 		velocity.x = playerVelocity;
 	}
 	else velocity.x = 0.f;
-	
+	/* //Movement góra-dó³
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && this->top() > 0) {
 		velocity.y = -playerVelocity;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && this->bottom() < 567) {
 		velocity.y = playerVelocity;
 	}
-	else velocity.y = 0.f;
+	else velocity.y = 0.f;*/
 }
 
 float Player::left() {
-	return this->playerSprite.getPosition().x -playerWidth;
+	return this->playerSprite.getPosition().x - (playerWidth/2 * playerScale);
 }
 float Player::right() {
-	return this->playerSprite.getPosition().x + playerWidth;
+	return this->playerSprite.getPosition().x + (playerWidth/2 * playerScale);
 }
 float Player::top() {
-	return this->playerSprite.getPosition().y - playerHeight;
+	return this->playerSprite.getPosition().y - playerHeight/2;
 }
 float Player::bottom() {
-	return this->playerSprite.getPosition().y + playerHeight;
+	return this->playerSprite.getPosition().y + playerHeight/2 ;
+}
+
+sf::Vector2f Player::getPosition() {
+	return this->playerSprite.getPosition();
 }
