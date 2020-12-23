@@ -18,3 +18,16 @@ void PlayerBullet::draw(sf::RenderTarget& target, sf::RenderStates state) const 
 void PlayerBullet::setPosition(sf::Vector2f pos) {
 	this->shape.setPosition(pos);
 }
+
+float PlayerBullet::left() {
+	return this->shape.getPosition().x - bulletWidth / 2;
+}
+float PlayerBullet::right() {
+	return this->shape.getPosition().x + bulletWidth / 2;
+}
+float PlayerBullet::top() {
+	return this->shape.getPosition().y - bulletHeight / 2;
+}
+float PlayerBullet::bottom() {
+	return this->shape.getPosition().y + bulletHeight / 2;
+}

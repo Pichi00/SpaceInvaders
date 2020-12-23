@@ -11,6 +11,11 @@ public:
 	PlayerBullet(float t_X, float t_Y);
 	~PlayerBullet() = default;
 	void setPosition(sf::Vector2f pos);
+
+	float left();
+	float right();
+	float top();
+	float bottom();
 private:
 	sf::RectangleShape shape;
 	const float bulletWidth = 3;
