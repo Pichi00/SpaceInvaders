@@ -4,7 +4,7 @@
 class PlayerBullet: public sf::Drawable
 {
 public:
-	bool isOnScreen{ false };
+	bool destroyed{ true };
 
 	void update();
 	PlayerBullet() = delete;
@@ -16,6 +16,9 @@ public:
 	float right();
 	float top();
 	float bottom();
+
+	void destroy();
+	void create();
 private:
 	sf::RectangleShape shape;
 	const float bulletWidth = 3;

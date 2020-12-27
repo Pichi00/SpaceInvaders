@@ -16,14 +16,14 @@ Block::Block(int t_X, int t_Y) {
 }
 
 void Block::update() {
-
+	this->enemySprite.move(velocity);
 }
 
 float Block::left() {
-	return this->enemySprite.getPosition().x - enemyWidth / 2;
+	return this->enemySprite.getPosition().x - enemyWidth * enemyScale / 2;
 }
 float Block::right() {
-	return this->enemySprite.getPosition().x + enemyWidth / 2;
+	return this->enemySprite.getPosition().x + enemyWidth * enemyScale / 2;
 }
 float Block::top() {
 	return this->enemySprite.getPosition().y - enemyHeight / 2;
@@ -53,4 +53,8 @@ void Block::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 void Block::setTexture() {
 	this->enemyTexture.loadFromFile("Textures/enemy.png");
 	this->enemySprite.setTexture(this->enemyTexture);
+}
+
+void Block::changeDirection() {
+	this->velocity.x = - this->velocity.x;
 }

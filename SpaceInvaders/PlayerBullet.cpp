@@ -31,3 +31,11 @@ float PlayerBullet::top() {
 float PlayerBullet::bottom() {
 	return this->shape.getPosition().y + bulletHeight / 2;
 }
+
+void PlayerBullet::create() {
+	this->destroyed = false;
+}
+
+void PlayerBullet::destroy() {
+	this->destroyed = true;
+}

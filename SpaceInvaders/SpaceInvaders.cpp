@@ -14,6 +14,13 @@ const float WindowHeight = 567;
 const int enemiesAmountX = 11;
 const int enemiesAmountY = 5;
 
+template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
+    return  a.right() >= b.left() && a.left() <= b.right() &&
+        a.bottom() >= b.top() && a.top() <= b.bottom();
+}
+
+bool colisionTest(PlayerBullet& p, Block& e);
+
 int main()
 {
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders"};
@@ -45,18 +52,18 @@ int main()
         window.clear(sf::Color::Black);
 
         /*Warunek sprawdzający kiedy zacząć wyświetlanie pocisku gracza*/
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && !bullet.isOnScreen) {
-            bullet.isOnScreen = true;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && bullet.destroyed) {
+            bullet.create();
             bullet.setPosition(player.getPosition());
         }
         /*Warunek sprawdzający czy wyświetlać pocisk gracza*/
-        if (bullet.isOnScreen) {
+        if (!bullet.destroyed) {
             bullet.update();
             window.draw(bullet);
         }
         /*Warunek sprawdzający czy pocisk znajduje się nadal na ekranie*/
         if (bullet.bottom() < 0) {
-            bullet.isOnScreen = false;
+            bullet.destroy();
         }
         /*
         if (enemy.right() >= WindowWidth || enemy.left() <=0 ) {
@@ -71,11 +78,26 @@ int main()
             }
         }*/
 
-        for (int i = 1; i <= enemiesAmountX; i++) {
-            for (int j = 1; j <= enemiesAmountY; j++) {
-                window.draw(enemies[i-1][j-1]);
+        for (int i = 0; i < enemiesAmountX; i++) {
+            for (int j = 0; j < enemiesAmountY; j++) {
+                if(!enemies[i][j].isDestroyed()) colisionTest(bullet, enemies[i][j]);
+                if (enemies[enemiesAmountX-1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
+                    enemies[i][j].changeDirection();
+                    
+                }
+                
             }
         }
+        for (int i = 0; i < enemiesAmountX; i++) {
+            for (int j = 0; j < enemiesAmountY; j++) {
+                if (!enemies[i][j].isDestroyed()) {
+                    enemies[i][j].update();
+                    window.draw(enemies[i][j]);
+                }
+                
+            }
+        }
+
 
         player.update();  
        // enemy.update();
@@ -88,3 +110,10 @@ int main()
     return 0;
 }
 
+bool colisionTest(PlayerBullet& pb, Block& e) {
+    if (!isIntersecting(pb, e)) return false;
+    else {
+        pb.destroy();
+        e.destroy();
+    }
+}

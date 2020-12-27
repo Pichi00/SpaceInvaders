@@ -23,6 +23,8 @@ public:
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();
 
+	void changeDirection();
+
 	void setTexture();
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
@@ -31,7 +33,9 @@ private:
 	sf::Texture enemyTexture;
 	float enemyWidth = 14;
 	float enemyHeight = 14;
-	float enemyScale = 3.0f;
+	float enemyScale = 2.0f;
+	float enemySpeed = 2.0f;
+	sf::Vector2f velocity{ enemySpeed,0 };
 	bool destroyed{ false };
 };
 
