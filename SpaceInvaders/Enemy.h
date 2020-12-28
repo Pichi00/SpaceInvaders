@@ -3,12 +3,12 @@
 #include<SFML/Window.hpp>
 #include<iostream>
 
-class Block : public sf::Drawable
+class Enemy : public sf::Drawable
 {
 public:
-	Block() = default;
-	Block(int t_X, int t_Y, char type = 0);
-	~Block() = default;
+	Enemy() = default;
+	Enemy(int t_X, int t_Y, char type = 0);
+	~Enemy() = default;
 
 	unsigned int enemyType{};
 

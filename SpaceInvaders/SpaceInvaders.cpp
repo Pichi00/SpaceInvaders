@@ -6,15 +6,15 @@
 /*Klasy*/
 #include "Player.h"
 #include "PlayerBullet.h"
-#include "Block.h"
+#include "Enemy.h"
 #include "Button.h"
 
 enum STATES { MAIN_MENU = 1, GAMEPLAY, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
 char GAME_STATE = STATES::MAIN_MENU;
 
 /*Wymiary okna*/
-const float WindowWidth = 1024;
-const float WindowHeight = 567;
+const unsigned int WindowWidth = 1024;
+const unsigned int WindowHeight = 567;
 
 const int enemiesAmountX = 11;
 const int enemiesAmountY = 5;
@@ -22,21 +22,21 @@ const int enemiesAmountY = 5;
 unsigned int player_points{};
 
 sf::Text pointsLabel;
-sf::Font font;
+
 
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
     return  a.right() >= b.left() && a.left() <= b.right() &&
         a.bottom() >= b.top() && a.top() <= b.bottom();
 }
 
-bool colisionTest(PlayerBullet& p, Block& e);
+bool colisionTest(PlayerBullet& p, Enemy& e);
 
 int main()
 {
     /*GENERAL SETUP*/
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
-    
+    sf::Font font;
     font.loadFromFile("Fonts/dogica.ttf");
     pointsLabel.setFont(font);
     pointsLabel.setCharacterSize(16);
@@ -63,16 +63,16 @@ int main()
     /*GAMEPLAY SETUP*/
     Player player(WindowWidth /2, WindowHeight * 7 / 8);
     PlayerBullet bullet(WindowWidth / 2, WindowHeight * 7 / 8);
-    Block enemies[enemiesAmountX][enemiesAmountY];
+    Enemy enemies[enemiesAmountX][enemiesAmountY];
     
     for (int i = 1; i <= enemiesAmountX; i++) {
         for (int j = 1; j <= enemiesAmountY; j++) {
             if (j == 1) {
-                Block enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8, 1);
+                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8, 1);
                 enemies[i - 1][j - 1] = enemy;
             }
             else {
-                Block enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
+                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
                 enemies[i - 1][j - 1] = enemy;
             }
            enemies[i - 1][j - 1].setTexture();
@@ -168,7 +168,7 @@ int main()
     return 0;
 }
 
-bool colisionTest(PlayerBullet& pb, Block& e) {
+bool colisionTest(PlayerBullet& pb, Enemy& e) {
     if (!isIntersecting(pb, e)) return false;
     else {
         pb.destroy();
