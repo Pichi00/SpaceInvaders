@@ -29,6 +29,8 @@ public:
 	void moveDown();
 
 	void setTexture();
+	unsigned int getPoints();
+
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 	sf::Sprite enemySprite;

@@ -82,3 +82,7 @@ void Block::changeDirection() {
 void Block::moveDown() {
 	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale });
 }
+
+unsigned int Block::getPoints() {
+	return points;
+}

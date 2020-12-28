@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -18,7 +19,10 @@ const float WindowHeight = 567;
 const int enemiesAmountX = 11;
 const int enemiesAmountY = 5;
 
-unsigned char player_points{};
+unsigned int player_points{};
+
+sf::Text pointsLabel;
+sf::Font font;
 
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
     return  a.right() >= b.left() && a.left() <= b.right() &&
@@ -32,6 +36,13 @@ int main()
     /*GENERAL SETUP*/
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
+    
+    font.loadFromFile("Fonts/dogica.ttf");
+    pointsLabel.setFont(font);
+    pointsLabel.setCharacterSize(16);
+    pointsLabel.setFillColor(sf::Color::White);
+    pointsLabel.setString("0");
+    pointsLabel.setPosition({ 20,20 });
     
     /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
@@ -148,6 +159,7 @@ int main()
             }
             player.update();
             window.draw(player);
+            window.draw(pointsLabel);
             /*-----/GAMEPLAY-----*/
             break;
         }
@@ -161,5 +173,7 @@ bool colisionTest(PlayerBullet& pb, Block& e) {
     else {
         pb.destroy();
         e.destroy();
+        player_points += e.getPoints();
+        pointsLabel.setString(std::to_string(player_points));
     }
 }
