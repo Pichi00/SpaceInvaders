@@ -73,6 +73,10 @@ void Block::setTexture() {
 
 void Block::changeDirection() {
 	this->velocity.x = - this->velocity.x;
+	if (++bumps == 2) {
+		moveDown();
+		bumps = 0;
+	}
 }
 
 void Block::moveDown() {

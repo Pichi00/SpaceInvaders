@@ -8,6 +8,11 @@ Button::Button(float t_X, float t_Y) {
 	shape.setPosition(t_X, t_Y);
 	shape.setSize({ buttonWidth, buttonHeight });
 	shape.setFillColor(color);
+
+	textSprite.setOrigin({ buttonWidth / 2, buttonHeight / 2 });
+	textSprite.setPosition(t_X, t_Y);
+	/*shape.setOutlineThickness(1.0f);
+	shape.setOutlineColor(sf::Color::White);*/
 }
 
 float Button::left() {
@@ -25,6 +30,7 @@ float Button::bottom() {
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 	target.draw(shape);
+	target.draw(textSprite);
 }
 
 bool Button::isPressed(sf::RenderWindow& w) {
@@ -50,4 +56,9 @@ bool Button::isHovered(sf::RenderWindow& w) {
 		shape.setFillColor({ 86, 27, 174 });
 		return false;
 	}
+}
+
+void Button:: setTextTexture(std::string texture_path) {
+	textTexture.loadFromFile(texture_path);
+	textSprite.setTexture(textTexture);
 }

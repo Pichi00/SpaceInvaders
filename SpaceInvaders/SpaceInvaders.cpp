@@ -29,16 +29,18 @@ bool colisionTest(PlayerBullet& p, Block& e);
 
 int main()
 {
-    /*GENERAL SETTINGS*/
+    /*GENERAL SETUP*/
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
     
-    /*MAIN MENU SETTINGS*/
+    /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
     sf::Texture MainMenuBackground;
 
     Button startGameButton(187, 173);
+    startGameButton.setTextTexture("Textures/grajtxt.png");
     Button exitGameButton(187, 373);
+    exitGameButton.setTextTexture("Textures/wyjdztxt.png");
 
     if (!MainMenuBackground.loadFromFile("Textures/mainmenu.png")) {
         std::cout << "Blad wczytywania tekstury" << std::endl;
@@ -47,10 +49,11 @@ int main()
 
 
 
-    /*GAMEPLAY SETTINGS*/
+    /*GAMEPLAY SETUP*/
     Player player(WindowWidth /2, WindowHeight * 7 / 8);
     PlayerBullet bullet(WindowWidth / 2, WindowHeight * 7 / 8);
     Block enemies[enemiesAmountX][enemiesAmountY];
+    
     for (int i = 1; i <= enemiesAmountX; i++) {
         for (int j = 1; j <= enemiesAmountY; j++) {
             if (j == 1) {
@@ -130,6 +133,7 @@ int main()
                     }
                     if (enemies[enemiesAmountX - 1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
                         enemies[i][j].changeDirection();
+                        
                     }
                 }
             }
