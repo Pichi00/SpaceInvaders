@@ -7,8 +7,10 @@ class Block : public sf::Drawable
 {
 public:
 	Block() = default;
-	Block(int t_X, int t_Y);
+	Block(int t_X, int t_Y, char type = 0);
 	~Block() = default;
+
+	unsigned int enemyType{};
 
 	void update();
 
@@ -30,6 +32,7 @@ private:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 	sf::Sprite enemySprite;
 	sf::Texture enemyTexture;
+	unsigned int points = 10;
 	float enemyWidth = 14;
 	float enemyHeight = 14;
 	float enemyScale = 2.0f;

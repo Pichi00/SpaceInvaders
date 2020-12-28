@@ -7,6 +7,9 @@
 #include "PlayerBullet.h"
 #include "Block.h"
 
+enum STATES { MAIN_MENU = 1, GAMEPLAY, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
+char GAME_STATE = STATES::MAIN_MENU;
+
 /*Wymiary okna*/
 const float WindowWidth = 1024;
 const float WindowHeight = 567;
@@ -32,8 +35,15 @@ int main()
     Block enemies[enemiesAmountX][enemiesAmountY];
     for (int i = 1; i <= enemiesAmountX; i++) {
         for (int j = 1; j <= enemiesAmountY; j++) {
-            Block enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
-            enemies[i - 1][j - 1] = enemy;
+            if (j == 1) {
+                Block enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8, 1);
+                enemies[i - 1][j - 1] = enemy;
+            }
+            else {
+                Block enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
+                enemies[i - 1][j - 1] = enemy;
+            }
+            
             enemies[i - 1][j - 1].setTexture();
         }
     }
