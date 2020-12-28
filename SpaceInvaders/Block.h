@@ -26,6 +26,7 @@ public:
 	sf::Vector2f getPosition();
 
 	void changeDirection();
+	void moveDown();
 
 	void setTexture();
 private:

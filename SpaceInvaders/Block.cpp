@@ -74,3 +74,7 @@ void Block::setTexture() {
 void Block::changeDirection() {
 	this->velocity.x = - this->velocity.x;
 }
+
+void Block::moveDown() {
+	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale });
+}
