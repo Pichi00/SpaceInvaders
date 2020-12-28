@@ -78,7 +78,7 @@ int main()
             }
         }*/
 
-        for (int i = 0; i < enemiesAmountX; i++) {
+       for (int i = 0; i < enemiesAmountX; i++) {
             for (int j = 0; j < enemiesAmountY; j++) {
                 if (!enemies[i][j].isDestroyed()) {
                     colisionTest(bullet, enemies[i][j]);
@@ -97,13 +97,8 @@ int main()
                 
             }
         }
-
-
         player.update();  
-       // enemy.update();
         window.draw(player);
-       // window.draw(enemy);
-       // window.draw(dot);
         
         window.display();
     }

@@ -28,7 +28,6 @@ public:
 	void setTexture();
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
-	//sf::RectangleShape shape;
 	sf::Sprite enemySprite;
 	sf::Texture enemyTexture;
 	float enemyWidth = 14;
