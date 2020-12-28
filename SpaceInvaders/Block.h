@@ -34,7 +34,7 @@ private:
 	float enemyWidth = 14;
 	float enemyHeight = 14;
 	float enemyScale = 2.0f;
-	float enemySpeed = 2.0f;
+	float enemySpeed = 1.5f;
 	sf::Vector2f velocity{ enemySpeed,0 };
 	bool destroyed{ false };
 };

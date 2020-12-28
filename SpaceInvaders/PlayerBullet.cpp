@@ -38,4 +38,5 @@ void PlayerBullet::create() {
 
 void PlayerBullet::destroy() {
 	this->destroyed = true;
+	this->shape.setPosition(0, 0);
 }

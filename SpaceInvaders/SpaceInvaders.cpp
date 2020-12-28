@@ -80,18 +80,18 @@ int main()
 
         for (int i = 0; i < enemiesAmountX; i++) {
             for (int j = 0; j < enemiesAmountY; j++) {
-                if(!enemies[i][j].isDestroyed()) colisionTest(bullet, enemies[i][j]);
-                if (enemies[enemiesAmountX-1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
-                    enemies[i][j].changeDirection();
-                    
+                if (!enemies[i][j].isDestroyed()) {
+                    colisionTest(bullet, enemies[i][j]);
                 }
-                
+                if (enemies[enemiesAmountX-1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
+                    enemies[i][j].changeDirection();  
+                }
             }
         }
         for (int i = 0; i < enemiesAmountX; i++) {
             for (int j = 0; j < enemiesAmountY; j++) {
+                enemies[i][j].update();
                 if (!enemies[i][j].isDestroyed()) {
-                    enemies[i][j].update();
                     window.draw(enemies[i][j]);
                 }
                 
