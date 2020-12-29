@@ -15,8 +15,14 @@ Enemy::Enemy(int t_X, int t_Y, char type) {
 		points = 10;
 		break;
 	case 1:
-		points = 20;
+		points = 10;
+		hp = 2;
 		enemySprite.setColor(sf::Color::Red);
+		break;
+	case 2:
+		points = 10;
+		hp = 3;
+		enemySprite.setColor(sf::Color::Green);
 		break;
 	}
 
@@ -43,8 +49,23 @@ float Enemy::bottom() {
 bool Enemy::isDestroyed() {
 	return this->destroyed;
 }
+
+void Enemy::hit() {
+	hp--;
+	if (hp == 0) {
+		destroy();
+	}
+	else if (hp == 1) {
+		enemySprite.setColor(sf::Color::White);
+		points += 10;
+	}
+	else {
+		enemySprite.setColor(sf::Color::Red);
+		points += 10;
+	}
+	
+}
 void Enemy::destroy() {
-	std::cout << points << std::endl;
 	destroyed = true;
 }
 

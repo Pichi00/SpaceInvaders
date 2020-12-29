@@ -2,11 +2,14 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 /*Klasy*/
 #include "Player.h"
 #include "PlayerBullet.h"
 #include "Enemy.h"
+#include "EnemyBullet.h"
 #include "Button.h"
 
 enum STATES { MAIN_MENU = 1, GAMEPLAY, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
@@ -16,8 +19,12 @@ char GAME_STATE = STATES::MAIN_MENU;
 const unsigned int WindowWidth = 1024;
 const unsigned int WindowHeight = 567;
 
-const int enemiesAmountX = 11;
-const int enemiesAmountY = 5;
+const unsigned char enemiesAmountX = 12;
+const unsigned char enemiesAmountY = 5;
+unsigned char enemiesType2=1;
+unsigned char enemiesType1=1;
+
+unsigned int wave = 1;
 
 unsigned int player_points{};
 
@@ -30,10 +37,12 @@ template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
 }
 
 bool colisionTest(PlayerBullet& p, Enemy& e);
+void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY],unsigned int type2=0, unsigned int type1=0);
 
 int main()
 {
     /*GENERAL SETUP*/
+    srand(time(NULL));
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
     sf::Font font;
@@ -50,7 +59,7 @@ int main()
 
     Button startGameButton(187, 173);
     startGameButton.setTextTexture("Textures/grajtxt.png");
-    Button exitGameButton(187, 373);
+    Button exitGameButton(187, 253);
     exitGameButton.setTextTexture("Textures/wyjdztxt.png");
 
     if (!MainMenuBackground.loadFromFile("Textures/mainmenu.png")) {
@@ -64,20 +73,9 @@ int main()
     Player player(WindowWidth /2, WindowHeight * 7 / 8);
     PlayerBullet bullet(WindowWidth / 2, WindowHeight * 7 / 8);
     Enemy enemies[enemiesAmountX][enemiesAmountY];
-    
-    for (int i = 1; i <= enemiesAmountX; i++) {
-        for (int j = 1; j <= enemiesAmountY; j++) {
-            if (j == 1) {
-                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8, 1);
-                enemies[i - 1][j - 1] = enemy;
-            }
-            else {
-                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
-                enemies[i - 1][j - 1] = enemy;
-            }
-           enemies[i - 1][j - 1].setTexture();
-        }
-    }
+    EnemyBullet ebullet(0,0);
+    setEnemiesWave(enemies, enemiesType2, enemiesType1);
+   
 
    /* sf::CircleShape dot(2.f);
     dot.setPosition(WindowWidth / 2, WindowHeight * 7 / 8);
@@ -123,6 +121,35 @@ int main()
             /*Warunek sprawdzający czy pocisk znajduje się nadal na ekranie*/
             if (bullet.bottom() < 0) {
                 bullet.destroy();
+            }
+
+            if (ebullet.destroyed) {
+                float ebulletX{};
+                float ebulletY{};
+                bool shot = false;
+                
+                do {
+                    int randX = rand() % 12;
+                    for (int i = enemiesAmountY - 1; i >= 0; i--) {
+                        if (!enemies[randX][i].isDestroyed()) {
+                            ebulletX = enemies[randX][i].getPosition().x;
+                            ebulletY = enemies[randX][i].getPosition().y;
+                            shot = true;
+                            break;
+                        }
+                    }
+                } while (shot != true );
+                
+                ebullet.create();
+                ebullet.setPosition({ ebulletX, ebulletY });
+            }
+            else if (!ebullet.destroyed) {
+                ebullet.update();
+                window.draw(ebullet);
+            }
+
+            if (ebullet.top() > WindowHeight) {
+                ebullet.destroy();
             }
             /*
             if (enemy.right() >= WindowWidth || enemy.left() <=0 ) {
@@ -172,8 +199,28 @@ bool colisionTest(PlayerBullet& pb, Enemy& e) {
     if (!isIntersecting(pb, e)) return false;
     else {
         pb.destroy();
-        e.destroy();
         player_points += e.getPoints();
+        e.hit();        
         pointsLabel.setString(std::to_string(player_points));
+    }
+}
+
+void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int type2, unsigned int type1) {
+    for (int i = 1; i <= enemiesAmountX; i++) {
+        for (int j = 1; j <= enemiesAmountY; j++) {
+            if (j >= 1 && j< 1+type2) {
+                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8, 2);
+                enemies[i - 1][j - 1] = enemy;
+            }
+            else if (j >= 1+type2 && j < 1 + type2 + type1) {
+                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8,1);
+                enemies[i - 1][j - 1] = enemy;
+            }
+            else {
+                Enemy enemy(10 + i * 55 * 10 / 9, 10 + j * 35 * 10 / 8);
+                enemies[i - 1][j - 1] = enemy;
+            }
+            enemies[i - 1][j - 1].setTexture();
+        }
     }
 }

@@ -21,6 +21,7 @@ public:
 
 	bool isDestroyed();
 	void destroy();
+	void hit();
 
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();
@@ -36,6 +37,7 @@ private:
 	sf::Sprite enemySprite;
 	sf::Texture enemyTexture;
 	unsigned int points = 10;
+	unsigned int hp = 1;
 	unsigned char bumps{}; //Zmienna zliczaj¹ca ile razy przeciwnicy odbili siê od krawêdzi
 	float enemyWidth = 14;
 	float enemyHeight = 14;
