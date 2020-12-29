@@ -12,7 +12,7 @@
 #include "EnemyBullet.h"
 #include "Button.h"
 
-enum STATES { MAIN_MENU = 1, GAMEPLAY, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
+enum STATES { MAIN_MENU = 1, GAMEPLAY, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
 char GAME_STATE = STATES::MAIN_MENU;
 
 /*Wymiary okna*/
@@ -36,9 +36,11 @@ template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
         a.bottom() >= b.top() && a.top() <= b.bottom();
 }
 
-bool colisionTest(PlayerBullet& p, Enemy& e);
+bool colisionTest(PlayerBullet& pb, Enemy& e);
+bool colisionTest(EnemyBullet& eb, Player& p);
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY],unsigned int type2=0, unsigned int type1=0);
-
+void gameOver();
+void gameReset();
 int main()
 {
     /*GENERAL SETUP*/
@@ -76,6 +78,14 @@ int main()
     EnemyBullet ebullet(0,0);
     setEnemiesWave(enemies, enemiesType2, enemiesType1);
    
+    /*GAME OVER SETUP*/
+    sf::Sprite GameOver;
+    sf::Texture GameOverBackground;
+
+    if (!GameOverBackground.loadFromFile("Textures/gameover.png")) {
+        std::cout << "Blad wczytywania tekstury" << std::endl;
+    }
+    GameOver.setTexture(GameOverBackground);
 
    /* sf::CircleShape dot(2.f);
     dot.setPosition(WindowWidth / 2, WindowHeight * 7 / 8);
@@ -92,7 +102,7 @@ int main()
 
         switch(GAME_STATE){
         case MAIN_MENU:
-            /*-----MAIN MANU-----*/
+            /*-----MAIN MENU-----*/
            
             if (startGameButton.isPressed(window)) {
                 GAME_STATE = STATES::GAMEPLAY;
@@ -104,7 +114,7 @@ int main()
             window.draw(MainMenu);
             window.draw(startGameButton);
             window.draw(exitGameButton);
-            /*----/MAIN MANU-----*/
+            /*----/MAIN MENU-----*/
             break;
         case GAMEPLAY:
             /*-----GAMEPLAY-----*/
@@ -185,9 +195,19 @@ int main()
                 }
             }
             player.update();
+            colisionTest(ebullet, player);
             window.draw(player);
             window.draw(pointsLabel);
             /*-----/GAMEPLAY-----*/
+            break;
+        case GAME_OVER:
+            /*-----GAME OVER-----*/
+            window.draw(GameOver);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+                GAME_STATE = STATES::MAIN_MENU;
+            }
+
+            /*-----/GAME OVER-----*/
             break;
         }
         window.display();
@@ -202,6 +222,15 @@ bool colisionTest(PlayerBullet& pb, Enemy& e) {
         player_points += e.getPoints();
         e.hit();        
         pointsLabel.setString(std::to_string(player_points));
+    }
+}
+
+bool colisionTest(EnemyBullet& eb, Player& p) {
+    if (!isIntersecting(eb, p)) return false;
+    else {
+        eb.destroy();
+        gameOver();
+        gameReset();
     }
 }
 
@@ -223,4 +252,12 @@ void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int 
             enemies[i - 1][j - 1].setTexture();
         }
     }
+}
+
+void gameOver() {
+    GAME_STATE = STATES::GAME_OVER;
+}
+
+void gameReset() {
+    std::cout << "reset" << std::endl;
 }

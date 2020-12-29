@@ -62,3 +62,7 @@ float Player::bottom() {
 sf::Vector2f Player::getPosition() {
 	return this->playerSprite.getPosition();
 }
+
+unsigned char Player::howManyHP() {
+	return this->playerHP;
+}

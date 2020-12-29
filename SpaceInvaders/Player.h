@@ -19,6 +19,7 @@ public:
 	float top();
 	float bottom();
 	sf::Vector2f getPosition();
+	unsigned char howManyHP();
 private:
 	/*Prywatne zmienne*/
 	sf::Sprite playerSprite;
@@ -28,7 +29,7 @@ private:
 	const float playerWidth = 15.0;
 	const float playerHeight = 15.0;
 	const float playerScale = 2.0;
-
+	unsigned char playerHP = 3;
 	/*Prywatne metody*/
 	void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
 };
