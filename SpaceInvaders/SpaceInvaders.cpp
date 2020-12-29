@@ -38,9 +38,10 @@ template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
 
 bool colisionTest(PlayerBullet& pb, Enemy& e);
 bool colisionTest(EnemyBullet& eb, Player& p);
+bool colisionTest(Enemy& e, Player& p);
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY],unsigned int type2=0, unsigned int type1=0);
 void gameOver();
-void gameReset();
+void newGame();
 int main()
 {
     /*GENERAL SETUP*/
@@ -54,7 +55,7 @@ int main()
     pointsLabel.setFillColor(sf::Color::White);
     pointsLabel.setString("0");
     pointsLabel.setPosition({ 20,20 });
-    
+    player_points = 0;
     /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
     sf::Texture MainMenuBackground;
@@ -81,7 +82,13 @@ int main()
     /*GAME OVER SETUP*/
     sf::Sprite GameOver;
     sf::Texture GameOverBackground;
+    sf::Text Result;
+    //std::string PlayerInput;
 
+    Result.setCharacterSize(20);
+    Result.setFillColor({ 86, 27, 174 });
+    Result.setPosition({WindowWidth/3, WindowHeight/2});
+    Result.setFont(font);
     if (!GameOverBackground.loadFromFile("Textures/gameover.png")) {
         std::cout << "Blad wczytywania tekstury" << std::endl;
     }
@@ -178,6 +185,7 @@ int main()
                 for (int j = 0; j < enemiesAmountY; j++) {
                     if (!enemies[i][j].isDestroyed()) {
                         colisionTest(bullet, enemies[i][j]);
+                        colisionTest(enemies[i][j], player);
                     }
                     if (enemies[enemiesAmountX - 1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
                         enemies[i][j].changeDirection();
@@ -203,8 +211,19 @@ int main()
         case GAME_OVER:
             /*-----GAME OVER-----*/
             window.draw(GameOver);
+           /* if (event.type == sf::Event::TextEntered)
+            {
+                PlayerInput += event.text.unicode;
+                PlayerNickName.setString(PlayerInput);
+                std::cout << PlayerInput << std::endl;
+            }*/
+            Result.setString("Twoj wynik: " + std::to_string(player_points));
+            window.draw(Result);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 GAME_STATE = STATES::MAIN_MENU;
+                window.close();
+                
+                return main();
             }
 
             /*-----/GAME OVER-----*/
@@ -230,7 +249,13 @@ bool colisionTest(EnemyBullet& eb, Player& p) {
     else {
         eb.destroy();
         gameOver();
-        gameReset();
+
+    }
+}
+bool colisionTest(Enemy& e, Player& p) {
+    if (!isIntersecting(e, p)) return false;
+    else {
+        gameOver();
     }
 }
 
@@ -256,8 +281,9 @@ void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int 
 
 void gameOver() {
     GAME_STATE = STATES::GAME_OVER;
+    
 }
 
-void gameReset() {
-    std::cout << "reset" << std::endl;
+void newGame(){
+    std::cout << "new game" << std::endl;
 }

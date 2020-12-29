@@ -28,7 +28,7 @@ private:
 	sf::Vector2f velocity{ playerSpeed, 0.f};
 	const float playerWidth = 15.0;
 	const float playerHeight = 15.0;
-	const float playerScale = 2.0;
+	const float playerScale = 3.0;
 	unsigned char playerHP = 3;
 	/*Prywatne metody*/
 	void draw(sf::RenderTarget &target, sf::RenderStates state) const override;

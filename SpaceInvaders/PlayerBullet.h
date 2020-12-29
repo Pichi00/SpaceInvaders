@@ -21,8 +21,8 @@ public:
 	void create();
 private:
 	sf::RectangleShape shape;
-	const float bulletWidth = 3;
-	const float bulletHeight = 9;
+	const float bulletWidth = 4;
+	const float bulletHeight = 12;
 	const float bulletSpeed = 8.0f;
 	sf::Vector2f velocity = { 0 , -bulletSpeed };
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;

@@ -41,7 +41,7 @@ private:
 	unsigned char bumps{}; //Zmienna zliczaj¹ca ile razy przeciwnicy odbili siê od krawêdzi
 	float enemyWidth = 14;
 	float enemyHeight = 14;
-	float enemyScale = 2.0f;
+	float enemyScale = 3.0f;
 	float enemySpeed = 1.5f;
 	sf::Vector2f velocity{ enemySpeed,0 };
 	bool destroyed{ false };
