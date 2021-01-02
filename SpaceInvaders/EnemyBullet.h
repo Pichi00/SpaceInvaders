@@ -22,7 +22,7 @@ private:
 	sf::RectangleShape shape;
 	const float bulletWidth = 4;
 	const float bulletHeight = 12;
-	const float bulletSpeed = 4.5f;
+	const float bulletSpeed = 5.0f;
 	sf::Vector2f velocity = { 0 , bulletSpeed };
 
 	void draw(sf::RenderTarget& target, sf::RenderStates state) const override;

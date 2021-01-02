@@ -4,6 +4,7 @@
 #include <SFML/Window.hpp>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <fstream>
 
 /*Klasy*/
 #include "Player.h"
@@ -30,32 +31,56 @@ unsigned int player_points{};
 
 sf::Text pointsLabel;
 
-
+/*Funkcje związane z kolizjami*/
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
     return  a.right() >= b.left() && a.left() <= b.right() &&
         a.bottom() >= b.top() && a.top() <= b.bottom();
 }
-
 bool colisionTest(PlayerBullet& pb, Enemy& e);
 bool colisionTest(EnemyBullet& eb, Player& p);
 bool colisionTest(Enemy& e, Player& p);
+void isEnemyOffScreen(Enemy& e);
+/*----------------------------*/
+
+
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY],unsigned int type2=0, unsigned int type1=0);
+
 void gameOver();
 void newGame();
+
+
 int main()
 {
     /*GENERAL SETUP*/
     srand(time(NULL));
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
-    sf::Font font;
-    font.loadFromFile("Fonts/dogica.ttf");
-    pointsLabel.setFont(font);
-    pointsLabel.setCharacterSize(16);
-    pointsLabel.setFillColor(sf::Color::White);
-    pointsLabel.setString("0");
-    pointsLabel.setPosition({ 20,20 });
-    player_points = 0;
+        
+        /*Ponits label*/
+        sf::Font font;
+        font.loadFromFile("Fonts/dogica.ttf");
+        pointsLabel.setFont(font);
+        pointsLabel.setCharacterSize(16);
+        pointsLabel.setFillColor(sf::Color::White);
+        pointsLabel.setString("0");
+        pointsLabel.setPosition({20,20 });
+        player_points = 0;
+
+        /*HP texture*/
+        sf::Sprite heart;
+        sf::Texture heartTexture;
+        float heartWidth = 16;
+        float heartHeight = 13;
+        float heartScale = 2;
+        heartTexture.loadFromFile("Textures/heart.png");
+        heartTexture.setRepeated(true);
+        heart.setOrigin(heartWidth/2, heartHeight/2);
+        heart.setScale(heartScale, heartScale);
+        heart.setPosition(heartWidth, 23);
+        heart.setPosition(25, WindowHeight - 25);
+        heart.setTexture(heartTexture);
+
+
     /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
     sf::Texture MainMenuBackground;
@@ -78,6 +103,7 @@ int main()
     Enemy enemies[enemiesAmountX][enemiesAmountY];
     EnemyBullet ebullet(0,0);
     setEnemiesWave(enemies, enemiesType2, enemiesType1);
+
    
     /*GAME OVER SETUP*/
     sf::Sprite GameOver;
@@ -186,6 +212,7 @@ int main()
                     if (!enemies[i][j].isDestroyed()) {
                         colisionTest(bullet, enemies[i][j]);
                         colisionTest(enemies[i][j], player);
+                        isEnemyOffScreen(enemies[i][j]);
                     }
                     if (enemies[enemiesAmountX - 1][j].right() >= WindowWidth || enemies[0][j].left() <= 0) {
                         enemies[i][j].changeDirection();
@@ -202,10 +229,14 @@ int main()
 
                 }
             }
+
+            heart.setTextureRect({ 0,0,16 * player.getHP(),13 });
+
             player.update();
             colisionTest(ebullet, player);
             window.draw(player);
             window.draw(pointsLabel);
+            window.draw(heart);
             /*-----/GAMEPLAY-----*/
             break;
         case GAME_OVER:
@@ -248,7 +279,8 @@ bool colisionTest(EnemyBullet& eb, Player& p) {
     if (!isIntersecting(eb, p)) return false;
     else {
         eb.destroy();
-        gameOver();
+        p.takeDamage();
+        if (!p.isAlive()) gameOver();
 
     }
 }
@@ -257,6 +289,10 @@ bool colisionTest(Enemy& e, Player& p) {
     else {
         gameOver();
     }
+}
+
+void isEnemyOffScreen(Enemy& e) {
+    if (e.bottom() > static_cast<float>(WindowHeight)) gameOver();
 }
 
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int type2, unsigned int type1) {

@@ -22,7 +22,7 @@ Enemy::Enemy(int t_X, int t_Y, char type) {
 	case 2:
 		points = 10;
 		hp = 3;
-		enemySprite.setColor(sf::Color::Green);
+		enemySprite.setColor({ 152, 31, 222 });
 		break;
 	}
 
@@ -101,7 +101,7 @@ void Enemy::changeDirection() {
 }
 
 void Enemy::moveDown() {
-	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale });
+	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale + 5 });
 }
 
 unsigned int Enemy::getPoints() {

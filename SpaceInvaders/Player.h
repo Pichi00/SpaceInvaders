@@ -19,7 +19,9 @@ public:
 	float top();
 	float bottom();
 	sf::Vector2f getPosition();
-	unsigned char howManyHP();
+	unsigned char getHP();
+	void takeDamage();
+	bool isAlive();
 private:
 	/*Prywatne zmienne*/
 	sf::Sprite playerSprite;
@@ -30,6 +32,7 @@ private:
 	const float playerHeight = 15.0;
 	const float playerScale = 3.0;
 	unsigned char playerHP = 3;
+	bool alive = true;
 	/*Prywatne metody*/
 	void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
 };

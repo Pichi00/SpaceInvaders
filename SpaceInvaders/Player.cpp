@@ -9,14 +9,10 @@ Player::Player(float t_X, float t_Y) {
 	playerSprite.setPosition(0,0);
 	playerSprite.setOrigin(playerWidth/2 , playerHeight/2 );
 	playerSprite.setPosition(t_X, t_Y);
-	/*std::cout<< playerSprite.getPosition().x <<" "<< playerSprite.getPosition().y<<std::endl;
-	std::cout<< playerSprite.getOrigin().x<<" " << playerSprite.getOrigin().y<<std::endl;
-	*/
 	if (!playerTexture.loadFromFile(playerTexturePath)) {
 		std::cout << "Blad ladowania tekstury gracza. Upewnij sie, ze posiadasz plik \"" << playerTexturePath<<"\"" <<std::endl;
 	}
 	playerSprite.setTexture(playerTexture);
-	//playerSprite.setColor(sf::Color::Magenta);
 	playerSprite.setScale(playerScale, playerScale);
 	
 }
@@ -36,14 +32,6 @@ void Player::update() {
 		velocity.x = playerSpeed;
 	}
 	else velocity.x = 0.f;
-	/* //Movement góra-dó³
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && this->top() > 0) {
-		velocity.y = -playerVelocity;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && this->bottom() < 567) {
-		velocity.y = playerVelocity;
-	}
-	else velocity.y = 0.f;*/
 }
 
 float Player::left() {
@@ -63,6 +51,17 @@ sf::Vector2f Player::getPosition() {
 	return this->playerSprite.getPosition();
 }
 
-unsigned char Player::howManyHP() {
+unsigned char Player::getHP() {
 	return this->playerHP;
+}
+
+void Player::takeDamage() {
+	if (--playerHP <= 0) {
+
+	}
+}
+
+bool Player::isAlive() {
+	if (playerHP > 0)	return true;
+	else				return false;
 }
