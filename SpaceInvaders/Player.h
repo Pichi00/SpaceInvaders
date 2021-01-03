@@ -22,6 +22,7 @@ public:
 	unsigned char getHP();
 	void takeDamage();
 	bool isAlive();
+	void setPosition(sf::Vector2f pos);
 private:
 	/*Prywatne zmienne*/
 	sf::Sprite playerSprite;

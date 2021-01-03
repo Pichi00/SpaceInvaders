@@ -5,6 +5,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <fstream>
+#include <windows.h>
 
 /*Klasy*/
 #include "Player.h"
@@ -13,7 +14,7 @@
 #include "EnemyBullet.h"
 #include "Button.h"
 
-enum STATES { MAIN_MENU = 1, GAMEPLAY, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
+enum STATES { MAIN_MENU = 1, GAMEPLAY, WAVE_SCREEN, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
 char GAME_STATE = STATES::MAIN_MENU;
 
 /*Wymiary okna*/
@@ -23,9 +24,11 @@ const unsigned int WindowHeight = 567;
 const unsigned char enemiesAmountX = 12;
 const unsigned char enemiesAmountY = 5;
 unsigned char enemiesType2=1;
-unsigned char enemiesType1=1;
+unsigned char enemiesType1=0;
+unsigned char enemiesAlive{};
 
-unsigned int wave = 1;
+unsigned int wave = 0;
+
 
 unsigned int player_points{};
 
@@ -80,6 +83,13 @@ int main()
         heart.setPosition(25, WindowHeight - 25);
         heart.setTexture(heartTexture);
 
+        sf::Text waveNumberText;
+        waveNumberText.setCharacterSize(60);
+        waveNumberText.setFont(font);
+        waveNumberText.setFillColor(sf::Color::White);
+        waveNumberText.setOrigin({170,20});
+        waveNumberText.setPosition({ WindowWidth / 2, WindowHeight / 2 });
+
 
     /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
@@ -102,7 +112,7 @@ int main()
     PlayerBullet bullet(WindowWidth / 2, WindowHeight * 7 / 8);
     Enemy enemies[enemiesAmountX][enemiesAmountY];
     EnemyBullet ebullet(0,0);
-    setEnemiesWave(enemies, enemiesType2, enemiesType1);
+    //setEnemiesWave(enemies, enemiesType2, enemiesType1);
 
    
     /*GAME OVER SETUP*/
@@ -151,6 +161,19 @@ int main()
             break;
         case GAMEPLAY:
             /*-----GAMEPLAY-----*/
+            if (enemiesAlive == 0) {
+                ebullet.destroy();
+                bullet.destroy();
+                player.setPosition({ WindowWidth / 2, WindowHeight * 7 / 8 });
+                wave++;
+                enemiesType1++;
+                setEnemiesWave(enemies, enemiesType2, enemiesType1);
+                window.clear(sf::Color::Black);
+                waveNumberText.setString("Wave " + std::to_string(wave));
+                window.draw(waveNumberText);
+                GAME_STATE = STATES::WAVE_SCREEN;
+                
+            }
             /*Warunek sprawdzający kiedy zacząć wyświetlanie pocisku gracza*/
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && bullet.destroyed) {
                 bullet.create();
@@ -172,7 +195,7 @@ int main()
                 bool shot = false;
                 
                 do {
-                    int randX = rand() % 12;
+                    int randX = rand() % enemiesAmountX;
                     for (int i = enemiesAmountY - 1; i >= 0; i--) {
                         if (!enemies[randX][i].isDestroyed()) {
                             ebulletX = enemies[randX][i].getPosition().x;
@@ -239,6 +262,15 @@ int main()
             window.draw(heart);
             /*-----/GAMEPLAY-----*/
             break;
+            /*-----WAVE SCREEN-----*/
+        case WAVE_SCREEN:
+            ebullet.destroy();
+            bullet.destroy();
+            
+            Sleep(2000);
+            GAME_STATE = STATES::GAMEPLAY;
+            break;
+            /*-----/WAVE SCREEN-----*/
         case GAME_OVER:
             /*-----GAME OVER-----*/
             window.draw(GameOver);
@@ -272,6 +304,11 @@ bool colisionTest(PlayerBullet& pb, Enemy& e) {
         player_points += e.getPoints();
         e.hit();        
         pointsLabel.setString(std::to_string(player_points));
+        if (e.isDestroyed()) {
+            enemiesAlive--;
+
+        }
+        
     }
 }
 
@@ -311,6 +348,7 @@ void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int 
                 enemies[i - 1][j - 1] = enemy;
             }
             enemies[i - 1][j - 1].setTexture();
+            enemiesAlive++;
         }
     }
 }

@@ -56,12 +56,14 @@ unsigned char Player::getHP() {
 }
 
 void Player::takeDamage() {
-	if (--playerHP <= 0) {
-
-	}
+	playerHP--;
 }
 
 bool Player::isAlive() {
 	if (playerHP > 0)	return true;
 	else				return false;
+}
+
+void Player::setPosition(sf::Vector2f pos) {
+	this->playerSprite.setPosition(pos);
 }
