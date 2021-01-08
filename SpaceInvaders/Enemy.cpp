@@ -9,7 +9,7 @@ Enemy::Enemy(int t_X, int t_Y, char type) {
 	enemySprite.setOrigin(enemyWidth / 2, enemyHeight / 2);
 	enemySprite.setPosition(static_cast<float> (t_X), static_cast<float>(t_Y));
 	enemySprite.setScale(enemyScale, enemyScale);
-
+	this->enemyType = type;
 	switch (type) {
 	case 0:
 		points = 10;
@@ -17,12 +17,12 @@ Enemy::Enemy(int t_X, int t_Y, char type) {
 	case 1:
 		points = 10;
 		hp = 2;
-		enemySprite.setColor(sf::Color::Blue);
+		enemySprite.setColor({ 152, 31, 222 }); //Fioletowy
 		break;
 	case 2:
 		points = 10;
 		hp = 3;
-		enemySprite.setColor({ 152, 31, 222 });
+		enemySprite.setColor(sf::Color::Red); 
 		break;
 	}
 
@@ -60,7 +60,7 @@ void Enemy::hit() {
 		points += 10;
 	}
 	else {
-		enemySprite.setColor(sf::Color::Blue);
+		enemySprite.setColor({ 152, 31, 222 }); //Fioletowy
 		points += 10;
 	}
 	
@@ -82,11 +82,13 @@ void Enemy::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 
 void Enemy::setTexture() {
 	if (enemyType == 0) {
-		enemyTexture.loadFromFile("Textures/enemy.png");
+		enemyTexture.loadFromFile("Textures/enemyt0.png");
 	}
 	else if (enemyType == 1) {
-		enemyTexture.loadFromFile("Textures/enemy.png");
-		enemySprite.setColor(sf::Color::Red);
+		enemyTexture.loadFromFile("Textures/enemyt1.png");
+	}
+	else if (enemyType == 2) {
+		enemyTexture.loadFromFile("Textures/enemyt2.png");
 	}
 	
 	this->enemySprite.setTexture(this->enemyTexture);

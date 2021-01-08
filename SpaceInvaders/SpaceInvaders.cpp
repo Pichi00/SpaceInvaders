@@ -19,7 +19,7 @@
 #include "EnemyBullet.h"
 #include "Button.h"
 
-enum STATES { MAIN_MENU = 1, GAMEPLAY, WAVE_SCREEN, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR };
+enum STATES { MAIN_MENU = 1, GAMEPLAY, WAVE_SCREEN, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR, PAUSE };
 char GAME_STATE = STATES::MAIN_MENU;
 
 /*Wymiary okna*/
@@ -145,6 +145,12 @@ int main()
     BestScoresBackground.loadFromFile("Textures/bestscores.png");
     BestScores.setTexture(BestScoresBackground);
 
+    /*PAUSE SETUP*/
+    sf::Sprite Pause;
+    sf::Texture PauseTexture;
+    PauseTexture.loadFromFile("Textures/pause.png");
+    Pause.setTexture(PauseTexture);
+
     for (int i = 0; i < 10; i++) {
         scoresText[i].setFont(font);
         scoresText[i].setFillColor({ 86, 27, 174 });
@@ -188,12 +194,24 @@ int main()
             break;
         case GAMEPLAY:
             /*-----GAMEPLAY-----*/
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+                GAME_STATE = STATES::PAUSE;
+            }
             if (enemiesAlive == 0) {
                 ebullet.destroy();
                 bullet.destroy();
                 player.setPosition({ WindowWidth / 2, WindowHeight * 7 / 8 });
                 wave++;
-                enemiesType1++;
+                if (wave < 8) {
+                    if (wave % 2 == 1 ) {
+                        enemiesType1++;
+                    }
+                    else {
+                        enemiesType2++;
+                        if (enemiesType1 > 0) enemiesType1--;
+                    }
+                }
+                
                 setEnemiesWave(enemies, enemiesType2, enemiesType1);
                 window.clear(sf::Color::Black);
                 waveNumberText.setString("Wave " + std::to_string(wave));
@@ -301,12 +319,7 @@ int main()
         case GAME_OVER:
             /*-----GAME OVER-----*/
             window.draw(GameOver);
-           /* if (event.type == sf::Event::TextEntered)
-            {
-                PlayerInput += event.text.unicode;
-                PlayerNickName.setString(PlayerInput);
-                std::cout << PlayerInput << std::endl;
-            }*/
+          
             Result.setString("Twoj wynik: " + std::to_string(player_points));
             window.draw(Result);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
@@ -330,7 +343,18 @@ int main()
             }
             /*------/BEST SCORES-----*/
             break;
+            /*------PAUSE-----*/
+        case PAUSE:
+            window.draw(Pause);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+                GAME_STATE = STATES::GAMEPLAY;
+            }
+
+
+            /*------/PAUSE-----*/
+            break;
         }
+
         window.display();
     }
     return 0;
@@ -487,7 +511,7 @@ void getResults(sf::Text scoresText[]) {
         }
         std::stringstream ss;
         if (!strings[i][0].empty()) {
-            ss <<i+1<<". "<< std::setw(6) << strings[i][0] << " | " << strings[i][1] << " | " << strings[i][2];
+            ss <<std::setw(2)<<i+1<<". "<< std::setw(6) << strings[i][0] << " | " << strings[i][1] << " | " << strings[i][2];
             scoresText[i].setString(ss.str());
         }
         
