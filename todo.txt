@@ -1,5 +1,5 @@
 -zwiększyć poziom trudności
--dodać możliwość zapauzowania gry
+-dodać możliwość zapauzowania gry +
 -dodać zakładkę "jak grać?"
 -dodać zakładkę "autor"
 -dodać dźwięki (?)
