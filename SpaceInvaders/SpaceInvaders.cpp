@@ -45,7 +45,7 @@ void isEnemyOffScreen(Enemy& e);
 /*----------------------------*/
 
 
-void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY],unsigned int type2=0, unsigned int type1=0);
+void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int type2=0, unsigned int type1=0);
 
 void gameOver();
 void newGame();
@@ -120,6 +120,14 @@ int main()
     PlayerBullet bullet(WindowWidth / 2, WindowHeight * 7 / 8);
     Enemy enemies[enemiesAmountX][enemiesAmountY];
     EnemyBullet ebullet(0,0);
+    clock_t bullet_cooldown_Start;
+    const float bulletCooldown = 500; //Pocisk gracza odnawia się co 0.5s
+    bool shotAvaliable = true;
+
+    clock_t ebullet_cooldown_Start;
+    const float ebulletCooldown = 1500; //Pocisk przeciwników odnawia się co 1.5s
+    bool eshotAvaliable = true;
+
     //setEnemiesWave(enemies, enemiesType2, enemiesType1);
 
    
@@ -220,9 +228,12 @@ int main()
                 
             }
             /*Warunek sprawdzający kiedy zacząć wyświetlanie pocisku gracza*/
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && bullet.destroyed) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && bullet.destroyed && shotAvaliable) {
                 bullet.create();
                 bullet.setPosition(player.getPosition());
+                bullet_cooldown_Start = clock();
+                shotAvaliable = false;
+
             }
             /*Warunek sprawdzający czy wyświetlać pocisk gracza*/
             if (!bullet.destroyed) {
@@ -234,7 +245,11 @@ int main()
                 bullet.destroy();
             }
 
-            if (ebullet.destroyed) {
+            if (!shotAvaliable) {
+                if (clock() - bullet_cooldown_Start > bulletCooldown) shotAvaliable = true;
+            }
+
+            if (ebullet.destroyed && eshotAvaliable) {
                 float ebulletX{};
                 float ebulletY{};
                 bool shot = false;
@@ -246,6 +261,8 @@ int main()
                             ebulletX = enemies[randX][i].getPosition().x;
                             ebulletY = enemies[randX][i].getPosition().y;
                             shot = true;
+                            ebullet_cooldown_Start = clock();
+                            eshotAvaliable = false;
                             break;
                         }
                     }
@@ -254,9 +271,15 @@ int main()
                 ebullet.create();
                 ebullet.setPosition({ ebulletX, ebulletY });
             }
-            else if (!ebullet.destroyed) {
+            else if(!ebullet.destroyed){
                 ebullet.update();
                 window.draw(ebullet);
+            }
+
+            if (!eshotAvaliable) {
+                if (clock() - ebullet_cooldown_Start > ebulletCooldown) {
+                    eshotAvaliable = true;
+                }
             }
 
             if (ebullet.top() > WindowHeight) {

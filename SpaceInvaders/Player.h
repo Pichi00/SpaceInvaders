@@ -27,7 +27,7 @@ private:
 	/*Prywatne zmienne*/
 	sf::Sprite playerSprite;
 	sf::Texture playerTexture;
-	float playerSpeed{ 8.0f };
+	float playerSpeed{ 6.0f };
 	sf::Vector2f velocity{ playerSpeed, 0.f};
 	const float playerWidth = 15.0;
 	const float playerHeight = 15.0;
