@@ -18,6 +18,7 @@ Enemy::Enemy(int t_X, int t_Y, char type) {
 		points = 10;
 		hp = 2;
 		enemySprite.setColor({ 152, 31, 222 }); //Fioletowy
+		//enemySprite.setColor({ 255, 138, 0 }); 
 		break;
 	case 2:
 		points = 10;
@@ -61,6 +62,7 @@ void Enemy::hit() {
 	}
 	else {
 		enemySprite.setColor({ 152, 31, 222 }); //Fioletowy
+		//enemySprite.setColor({ 255, 138, 0 }); 
 		points += 10;
 	}
 	

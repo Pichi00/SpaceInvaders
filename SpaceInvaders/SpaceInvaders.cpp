@@ -105,8 +105,11 @@ int main()
     startGameButton.setTextTexture("Textures/grajtxt.png");
     Button bestScoresButton(187, 253);
     bestScoresButton.setTextTexture("Textures/bestscorestxt.png");
-    Button exitGameButton(187, 333);
+    Button howToButton(187, 333);
+    howToButton.setTextTexture("Textures/howtotxt.png");
+    Button exitGameButton(187, 413);
     exitGameButton.setTextTexture("Textures/wyjdztxt.png");
+   
 
     if (!MainMenuBackground.loadFromFile("Textures/mainmenu.png")) {
         std::cout << "Blad wczytywania tekstury" << std::endl;
@@ -137,9 +140,9 @@ int main()
     sf::Text Result;
     //std::string PlayerInput;
 
-    Result.setCharacterSize(20);
+    Result.setCharacterSize(25);
     Result.setFillColor({ 86, 27, 174 });
-    Result.setPosition({WindowWidth/3, WindowHeight/2});
+    Result.setPosition({WindowWidth/6, WindowHeight/2});
     Result.setFont(font);
     if (!GameOverBackground.loadFromFile("Textures/gameover.png")) {
         std::cout << "Blad wczytywania tekstury" << std::endl;
@@ -153,6 +156,12 @@ int main()
     BestScoresBackground.loadFromFile("Textures/bestscores.png");
     BestScores.setTexture(BestScoresBackground);
 
+    /*HOW TO PLAY SETUP*/
+    sf::Sprite HowToPlay;
+    sf::Texture HowToPlayBackground;
+    HowToPlayBackground.loadFromFile("Textures/howtoplay.png");
+    HowToPlay.setTexture(HowToPlayBackground);
+
     /*PAUSE SETUP*/
     sf::Sprite Pause;
     sf::Texture PauseTexture;
@@ -162,7 +171,7 @@ int main()
     for (int i = 0; i < 10; i++) {
         scoresText[i].setFont(font);
         scoresText[i].setFillColor({ 86, 27, 174 });
-        scoresText[i].setPosition({WindowWidth/4,WindowHeight / 3 + 30 * static_cast<float>(i) });
+        scoresText[i].setPosition({WindowWidth/5,WindowHeight / 3 + 30 * static_cast<float>(i) });
         scoresText[i].setCharacterSize(16);
     }
 
@@ -186,9 +195,12 @@ int main()
             if (startGameButton.isPressed(window)) {
                 GAME_STATE = STATES::GAMEPLAY;
             }
-            else if (bestScoresButton.isPressed(window)){
+            else if (bestScoresButton.isPressed(window)) {
                 getResults(scoresText);
                 GAME_STATE = STATES::BEST_SCORES;
+            }
+            else if (howToButton.isPressed(window)) {
+                GAME_STATE = STATES::HOW_TO_PLAY;
             }
             else if (exitGameButton.isPressed(window)) {
                 window.close();
@@ -197,6 +209,7 @@ int main()
             window.draw(MainMenu);
             window.draw(startGameButton);
             window.draw(bestScoresButton);
+            window.draw(howToButton);
             window.draw(exitGameButton);
             /*----/MAIN MENU-----*/
             break;
@@ -205,12 +218,23 @@ int main()
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
                 GAME_STATE = STATES::PAUSE;
             }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+                for (int i = 0; i < enemiesAmountX; i++) {
+                    for (int j = 0; j < enemiesAmountY; j++) {
+                        if (!enemies[i][j].isDestroyed()) {
+                            enemies[i][j].destroy();
+                            enemiesAlive--;
+                        }
+                       
+                    }
+                }
+            }
             if (enemiesAlive == 0) {
                 ebullet.destroy();
                 bullet.destroy();
                 player.setPosition({ WindowWidth / 2, WindowHeight * 7 / 8 });
                 wave++;
-                if (wave < 8) {
+                if (wave < 9) {
                     if (wave % 2 == 1 ) {
                         enemiesType1++;
                     }
@@ -343,7 +367,7 @@ int main()
             /*-----GAME OVER-----*/
             window.draw(GameOver);
           
-            Result.setString("Twoj wynik: " + std::to_string(player_points));
+            Result.setString("You have scored " + std::to_string(player_points) + " points.");
             window.draw(Result);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 GAME_STATE = STATES::MAIN_MENU;
@@ -365,6 +389,14 @@ int main()
                 GAME_STATE = STATES::MAIN_MENU;
             }
             /*------/BEST SCORES-----*/
+            break;
+            /*------HOW TO PLAY-----*/
+        case HOW_TO_PLAY:
+            window.draw(HowToPlay);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+                GAME_STATE = STATES::MAIN_MENU;
+            }
+            /*------/HOW TO PLAY-----*/
             break;
             /*------PAUSE-----*/
         case PAUSE:
@@ -480,8 +512,6 @@ void saveResult(unsigned int points) {
     timeStream << std::put_time(&tm, "%H:%M:%S");
     std::string date = dateStream.str();
     std::string time = timeStream.str();
-
-    std::cout << date << " " << time << std::endl;
     /*----------------------------*/
 
     if (points > tab[9]) {
@@ -496,7 +526,6 @@ void saveResult(unsigned int points) {
     plik.open("results.txt", std::ios::out);
     for (int i = 0; i < 10; i++) {
         plik << scores[i][0] << " " << scores[i][1] << " " << scores[i][2] << std::endl;
-        //std::cout <<i<<" "<< scores[i][0] << " " << scores[i][1] << " " << scores[i][2] << std::endl;
     }
     plik.close();
     
@@ -540,4 +569,8 @@ void getResults(sf::Text scoresText[]) {
         
     }
     plik.close();
+
 }
+
+
+
