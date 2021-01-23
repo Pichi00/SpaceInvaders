@@ -28,10 +28,25 @@ const unsigned int WindowHeight = 567;
 
 const unsigned char enemiesAmountX = 12;
 const unsigned char enemiesAmountY = 5;
+
+/*-----------*/
+unsigned int wave = 0;
+unsigned char enemiesType2 = 1;
+unsigned char enemiesType1 = 0;
 unsigned char enemiesAlive{};
 unsigned int player_points{};
 
+bool shotAvaliable = true;
+bool eshotAvaliable = true;
+
 sf::Text pointsLabel;
+
+/*----------*/
+
+
+
+
+
 
 /*Funkcje związane z kolizjami*/
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
@@ -48,7 +63,7 @@ void isEnemyOffScreen(Enemy& e);
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int type2=0, unsigned int type1=0);
 
 void gameOver();
-void newGame();
+void newGame(Player& p);
 
 void saveResult(unsigned int points);
 void getResults(sf::Text scoresText[]);
@@ -61,10 +76,7 @@ int main()
     srand(time(NULL));
     sf::RenderWindow window{ sf::VideoMode(WindowWidth,WindowHeight), "Space Invaders", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
-    unsigned int wave = 0;
-    unsigned char enemiesType2 = 1;
-    unsigned char enemiesType1 = 0;
-    enemiesAlive = 0;
+    
         /*Ponits label*/
         sf::Font font;
         font.loadFromFile("Fonts/dogica.ttf");
@@ -125,12 +137,8 @@ int main()
     EnemyBullet ebullet(0,0);
     clock_t bullet_cooldown_Start;
     const float bulletCooldown = 500; //Pocisk gracza odnawia się co 0.5s
-    bool shotAvaliable = true;
-
     clock_t ebullet_cooldown_Start;
     const float ebulletCooldown = 1500; //Pocisk przeciwników odnawia się co 1.5s
-    bool eshotAvaliable = true;
-
     //setEnemiesWave(enemies, enemiesType2, enemiesType1);
 
    
@@ -156,6 +164,13 @@ int main()
     BestScoresBackground.loadFromFile("Textures/bestscores.png");
     BestScores.setTexture(BestScoresBackground);
 
+    for (int i = 0; i < 10; i++) {
+        scoresText[i].setFont(font);
+        scoresText[i].setFillColor({ 86, 27, 174 });
+        scoresText[i].setPosition({ WindowWidth / 5,WindowHeight / 3 + 30 * static_cast<float>(i) });
+        scoresText[i].setCharacterSize(16);
+    }
+
     /*HOW TO PLAY SETUP*/
     sf::Sprite HowToPlay;
     sf::Texture HowToPlayBackground;
@@ -168,18 +183,7 @@ int main()
     PauseTexture.loadFromFile("Textures/pause.png");
     Pause.setTexture(PauseTexture);
 
-    for (int i = 0; i < 10; i++) {
-        scoresText[i].setFont(font);
-        scoresText[i].setFillColor({ 86, 27, 174 });
-        scoresText[i].setPosition({WindowWidth/5,WindowHeight / 3 + 30 * static_cast<float>(i) });
-        scoresText[i].setCharacterSize(16);
-    }
-
-   /* sf::CircleShape dot(2.f);
-    dot.setPosition(WindowWidth / 2, WindowHeight * 7 / 8);
-    dot.setPosition(enemy.right(), enemy.top());
-    dot.setFillColor(sf::Color::Red);*/
-
+  
        while (window.isOpen()) {
         sf::Event event;
         
@@ -193,6 +197,7 @@ int main()
             /*-----MAIN MENU-----*/
            
             if (startGameButton.isPressed(window)) {
+                newGame(player);
                 GAME_STATE = STATES::GAMEPLAY;
             }
             else if (bestScoresButton.isPressed(window)) {
@@ -371,9 +376,8 @@ int main()
             window.draw(Result);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 GAME_STATE = STATES::MAIN_MENU;
-                window.close();
-                
-                return main();
+                /*window.close();
+                return main();*/
             }
 
             /*-----/GAME OVER-----*/
@@ -477,8 +481,22 @@ void gameOver() {
     saveResult(player_points);
 }
 
-void newGame(){
-    std::cout << "new game" << std::endl;
+void newGame(Player& p){
+    wave = 0;
+    enemiesType2 = 1;
+    enemiesType1 = 0;
+    enemiesAlive = 0;
+    player_points = 0;
+    p.setHP();
+
+    shotAvaliable = true;
+    eshotAvaliable = true;
+
+    pointsLabel.setString("0");
+
+
+
+
 }
 
 void saveResult(unsigned int points) {

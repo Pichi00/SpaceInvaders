@@ -23,6 +23,7 @@ public:
 	void takeDamage();
 	bool isAlive();
 	void setPosition(sf::Vector2f pos);
+	void setHP();
 private:
 	/*Prywatne zmienne*/
 	sf::Sprite playerSprite;

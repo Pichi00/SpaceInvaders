@@ -67,3 +67,7 @@ bool Player::isAlive() {
 void Player::setPosition(sf::Vector2f pos) {
 	this->playerSprite.setPosition(pos);
 }
+
+void Player::setHP() {
+	playerHP = 3;
+}
