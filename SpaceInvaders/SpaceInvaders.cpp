@@ -236,7 +236,7 @@ int main()
                 GAME_STATE = STATES::PAUSE;
             }
             /*SKIP THE WAVE*/
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+           /* if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 for (int i = 0; i < enemiesAmountX; i++) {
                     for (int j = 0; j < enemiesAmountY; j++) {
                         if (!enemies[i][j].isDestroyed()) {
@@ -246,7 +246,7 @@ int main()
                        
                     }
                 }
-            }
+            }*/
             if (enemiesAlive == 0) {
                 ebullet.destroy();
                 bullet.destroy();
