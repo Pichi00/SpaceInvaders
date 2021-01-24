@@ -43,11 +43,6 @@ sf::Text pointsLabel;
 
 /*----------*/
 
-
-
-
-
-
 /*Funkcje związane z kolizjami*/
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
     return  a.right() >= b.left() && a.left() <= b.right() &&
@@ -112,6 +107,7 @@ int main()
     /*MAIN MENU SETUP*/
     sf::Sprite MainMenu;
     sf::Texture MainMenuBackground;
+    sf::Text authorText;
 
     Button startGameButton(187, 173);
     startGameButton.setTextTexture("Textures/grajtxt.png");
@@ -121,6 +117,13 @@ int main()
     howToButton.setTextTexture("Textures/howtotxt.png");
     Button exitGameButton(187, 413);
     exitGameButton.setTextTexture("Textures/wyjdztxt.png");
+
+    authorText.setFont(font);
+    authorText.setColor({ 86, 27, 174 });
+    authorText.setCharacterSize(14);
+    authorText.setOrigin({ 170,20 });
+    authorText.setPosition({ WindowWidth - 220, WindowHeight - 5 });
+    authorText.setString("Author: Piotr Kolodziejski");
    
 
     if (!MainMenuBackground.loadFromFile("Textures/mainmenu.png")) {
@@ -136,7 +139,7 @@ int main()
     Enemy enemies[enemiesAmountX][enemiesAmountY];
     EnemyBullet ebullet(0,0);
     clock_t bullet_cooldown_Start;
-    const float bulletCooldown = 500; //Pocisk gracza odnawia się co 0.5s
+    const float bulletCooldown = 450; //Pocisk gracza odnawia się co 0.45s
     clock_t ebullet_cooldown_Start;
     const float ebulletCooldown = 1500; //Pocisk przeciwników odnawia się co 1.5s
     //setEnemiesWave(enemies, enemiesType2, enemiesType1);
@@ -180,8 +183,16 @@ int main()
     /*PAUSE SETUP*/
     sf::Sprite Pause;
     sf::Texture PauseTexture;
+    Button ResumeButton(WindowWidth / 2, WindowHeight / 2);
+    Button BackToMenuButton(WindowWidth / 2, WindowHeight / 16 * 11);
+
     PauseTexture.loadFromFile("Textures/pause.png");
     Pause.setTexture(PauseTexture);
+
+    ResumeButton.setTextTexture("Textures/resumetxt.png");
+    ResumeButton.setScale({ 1.3, 1.3 });
+    BackToMenuButton.setTextTexture("Textures/backtomenutxt.png");
+
 
   
        while (window.isOpen()) {
@@ -212,6 +223,7 @@ int main()
             }
 
             window.draw(MainMenu);
+            window.draw(authorText);
             window.draw(startGameButton);
             window.draw(bestScoresButton);
             window.draw(howToButton);
@@ -223,6 +235,7 @@ int main()
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
                 GAME_STATE = STATES::PAUSE;
             }
+            /*SKIP THE WAVE*/
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 for (int i = 0; i < enemiesAmountX; i++) {
                     for (int j = 0; j < enemiesAmountY; j++) {
@@ -257,7 +270,7 @@ int main()
                 
             }
             /*Warunek sprawdzający kiedy zacząć wyświetlanie pocisku gracza*/
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && bullet.destroyed && shotAvaliable) {
+            if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) && bullet.destroyed && shotAvaliable) {
                 bullet.create();
                 bullet.setPosition(player.getPosition());
                 bullet_cooldown_Start = clock();
@@ -405,8 +418,16 @@ int main()
             /*------PAUSE-----*/
         case PAUSE:
             window.draw(Pause);
+            window.draw(ResumeButton);
+            window.draw(BackToMenuButton);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                 GAME_STATE = STATES::GAMEPLAY;
+            }
+            if (ResumeButton.isPressed(window)) {
+                GAME_STATE = STATES::GAMEPLAY;
+            }
+            if (BackToMenuButton.isPressed(window)) {
+                GAME_STATE = STATES::MAIN_MENU;
             }
 
 

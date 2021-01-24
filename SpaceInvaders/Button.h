@@ -14,6 +14,7 @@ public:
 	bool isPressed(sf::RenderWindow& w);
 	bool isHovered(sf::RenderWindow& w);
 	void setTextTexture(std::string texture_path);
+	void setScale(sf::Vector2f);
 	
 private:
 	/*bool pressed = false;

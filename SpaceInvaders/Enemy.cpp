@@ -105,7 +105,7 @@ void Enemy::changeDirection() {
 }
 
 void Enemy::moveDown() {
-	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale + 5 });
+	this->enemySprite.setPosition({ enemySprite.getPosition().x,enemySprite.getPosition().y + enemyHeight*enemyScale + 3});
 }
 
 unsigned int Enemy::getPoints() {

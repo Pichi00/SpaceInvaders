@@ -62,3 +62,8 @@ void Button:: setTextTexture(std::string texture_path) {
 	textTexture.loadFromFile(texture_path);
 	textSprite.setTexture(textTexture);
 }
+
+void Button::setScale(sf::Vector2f scale) {
+	shape.setScale(scale);
+	textSprite.setScale(scale);
+}

@@ -25,10 +25,10 @@ void Player::draw(sf::RenderTarget &target, sf::RenderStates state) const {
 void Player::update() {
 	this->playerSprite.move(this->velocity);
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && this->left() > 0) {
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) && this->left() > 0) {
 		velocity.x = -playerSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && this->right() < 1024) {
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) && this->right() < 1024) {
 		velocity.x = playerSpeed;
 	}
 	else velocity.x = 0.f;
