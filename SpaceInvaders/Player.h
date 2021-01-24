@@ -6,8 +6,6 @@
 class Player: public sf::Drawable
 {
 public:
-	/*Publiczne zmienne*/
-
 	/*Publiczne metody*/
 	Player() = delete;
 	Player(float t_X, float t_Y);

@@ -5,12 +5,12 @@
 #include <SFML/Window.hpp>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
-#include <fstream>
-#include <windows.h>
 #include <ctime>
-#include <iomanip>
-#include <string>       /*getline*/
-#include <sstream>
+#include <fstream>      /* zapis/odczyt pliku*/
+#include <windows.h>    /* Sleep()*/       
+#include <iomanip>      /* setw()*/
+#include <string>       /* getline*/
+#include <sstream>      /* stringstream*/
 
 /*Klasy*/
 #include "Player.h"
@@ -19,7 +19,8 @@
 #include "EnemyBullet.h"
 #include "Button.h"
 
-enum STATES { MAIN_MENU = 1, GAMEPLAY, WAVE_SCREEN, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, AUTHOR, PAUSE };
+/*Stany w których może być gra*/
+enum STATES { MAIN_MENU = 1, GAMEPLAY, WAVE_SCREEN, GAME_OVER, HOW_TO_PLAY, BEST_SCORES, PAUSE };
 char GAME_STATE = STATES::MAIN_MENU;
 
 /*Wymiary okna*/
@@ -29,7 +30,6 @@ const unsigned int WindowHeight = 567;
 const unsigned char enemiesAmountX = 12;
 const unsigned char enemiesAmountY = 5;
 
-/*-----------*/
 unsigned int wave = 0;
 unsigned char enemiesType2 = 1;
 unsigned char enemiesType1 = 0;
@@ -41,8 +41,6 @@ bool eshotAvaliable = true;
 
 sf::Text pointsLabel;
 
-/*----------*/
-
 /*Funkcje związane z kolizjami*/
 template <class T1, class T2> bool isIntersecting(T1& a, T2& b) {
     return  a.right() >= b.left() && a.left() <= b.right() &&
@@ -53,7 +51,6 @@ bool colisionTest(EnemyBullet& eb, Player& p);
 bool colisionTest(Enemy& e, Player& p);
 void isEnemyOffScreen(Enemy& e);
 /*----------------------------*/
-
 
 void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int type2=0, unsigned int type1=0);
 
@@ -125,7 +122,6 @@ int main()
     authorText.setPosition({ WindowWidth - 220, WindowHeight - 5 });
     authorText.setString("Author: Piotr Kolodziejski");
    
-
     if (!MainMenuBackground.loadFromFile("Textures/mainmenu.png")) {
         std::cout << "Blad wczytywania tekstury" << std::endl;
     }
@@ -142,14 +138,11 @@ int main()
     const float bulletCooldown = 450; //Pocisk gracza odnawia się co 0.45s
     clock_t ebullet_cooldown_Start;
     const float ebulletCooldown = 1500; //Pocisk przeciwników odnawia się co 1.5s
-    //setEnemiesWave(enemies, enemiesType2, enemiesType1);
-
    
     /*GAME OVER SETUP*/
     sf::Sprite GameOver;
     sf::Texture GameOverBackground;
     sf::Text Result;
-    //std::string PlayerInput;
 
     Result.setCharacterSize(25);
     Result.setFillColor({ 86, 27, 174 });
@@ -197,8 +190,8 @@ int main()
   
        while (window.isOpen()) {
         sf::Event event;
-        
         window.pollEvent(event);
+
         /*Warunek sprawdzający kiedy zamknąć okno*/
         if (event.type == sf::Event::Closed) window.close();
         window.clear(sf::Color::Black);
@@ -327,19 +320,6 @@ int main()
             if (ebullet.top() > WindowHeight) {
                 ebullet.destroy();
             }
-            /*
-            if (enemy.right() >= WindowWidth || enemy.left() <=0 ) {
-                enemy.changeDirection();
-            }*/
-
-            /*for (int i = 0; i < enemiesAmountX; i++) {
-                for (int j = 0; j < enemiesAmountY; j++) {
-                    if (!blocks[i][j].isDestroyed()) {
-                        window.draw(blocks[i][j]);
-                    }
-                }
-            }*/
-
             for (int i = 0; i < enemiesAmountX; i++) {
                 for (int j = 0; j < enemiesAmountY; j++) {
                     if (!enemies[i][j].isDestroyed()) {
@@ -429,12 +409,9 @@ int main()
             if (BackToMenuButton.isPressed(window)) {
                 GAME_STATE = STATES::MAIN_MENU;
             }
-
-
             /*------/PAUSE-----*/
             break;
         }
-
         window.display();
     }
     return 0;
@@ -449,9 +426,7 @@ bool colisionTest(PlayerBullet& pb, Enemy& e) {
         pointsLabel.setString(std::to_string(player_points));
         if (e.isDestroyed()) {
             enemiesAlive--;
-
-        }
-        
+        }        
     }
 }
 
@@ -461,7 +436,6 @@ bool colisionTest(EnemyBullet& eb, Player& p) {
         eb.destroy();
         p.takeDamage();
         if (!p.isAlive()) gameOver();
-
     }
 }
 bool colisionTest(Enemy& e, Player& p) {
@@ -498,7 +472,6 @@ void setEnemiesWave(Enemy enemies[enemiesAmountX][enemiesAmountY], unsigned int 
 
 void gameOver() {
     GAME_STATE = STATES::GAME_OVER;
-
     saveResult(player_points);
 }
 
@@ -514,19 +487,12 @@ void newGame(Player& p){
     eshotAvaliable = true;
 
     pointsLabel.setString("0");
-
-
-
-
 }
 
 void saveResult(unsigned int points) {
     std::fstream plik;
     std::string scores[10][3];
     int tab[10];
-    /*std::string date;
-    std::string time;*/
-    //bool resultInserted = true;
 
     plik.open("results.txt", std::ios::in);
     for (int i = 0; i < 10; i++) {
@@ -538,7 +504,6 @@ void saveResult(unsigned int points) {
         catch (std::exception& err) {
             tab[i] = 0;
         }
-        //std::cout << scores[i][0] << " " << scores[i][1] << " " << scores[i][2] << std::endl;
     }
     sort(tab, scores);
     /*--- Zapis daty i godziny do stringa --*/
@@ -566,9 +531,7 @@ void saveResult(unsigned int points) {
     for (int i = 0; i < 10; i++) {
         plik << scores[i][0] << " " << scores[i][1] << " " << scores[i][2] << std::endl;
     }
-    plik.close();
-    
-    
+    plik.close();    
 }
 
 void sort(int tab[10], std::string s[10][3]) {
@@ -595,7 +558,7 @@ void getResults(sf::Text scoresText[]) {
     std::string strings[10][3];
     
     plik.open("results.txt", std::ios::in);
-    //scores[0].setString("Wynik  |Data        |Godzina");
+
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 3; j++) {
             plik >> strings[i][j];
@@ -604,11 +567,9 @@ void getResults(sf::Text scoresText[]) {
         if (!strings[i][0].empty()) {
             ss <<std::setw(2)<<i+1<<". "<< std::setw(6) << strings[i][0] << " | " << strings[i][1] << " | " << strings[i][2];
             scoresText[i].setString(ss.str());
-        }
-        
+        }        
     }
     plik.close();
-
 }
 
 
